@@ -60,14 +60,16 @@ class Blockchain:
 
     def add_block(self, new_block):
         new_block.previous_hash = self.chain[-1].hash
-        new_block.hash = new_block.calculate_hash()
         self.chain.append(new_block)
 
     def proof_of_work(self, block, difficulty):
         while block.hash[:difficulty] != '0' * difficulty:
             block.nonce += 1
             block.hash = block.calculate_hash()
+            print(f"Trying nonce: {block.nonce} | Hash: {block.hash}")  # Debug üzenet
+        print(f"Proof of work completed with nonce: {block.nonce} | Hash: {block.hash}")
         return block.hash
+
 
     def create_account(self, user):
         if user not in self.accounts:
@@ -127,7 +129,7 @@ def display_blockchain():
             f"Merkle Root: {block.merkle_root}\n"
             f"Nonce: {block.nonce}\n"
             f"Hash: {block.hash}\n"
-            f"Timestamp: {block.timestamp}\n"
+            f"Timestamp: {block.timestamp}\n"      
         )
         for tx in block.transactions:
             sender = tx['sender']
@@ -135,12 +137,14 @@ def display_blockchain():
             amount = tx['amount']
             sender_balance_after = tx['sender_balance_after']
             recipient_balance_after = tx['recipient_balance_after']
+            signature = tx['signature']  # Signature hozzáadása
             block_info += (
                 f"Sender: {sender}\n"
                 f"Sender Balance After Transaction: {sender_balance_after}\n"
                 f"Amount: {amount}\n"
                 f"Recipient: {recipient}\n"
                 f"Recipient Balance After Transaction: {recipient_balance_after}\n"
+                f"Signature: {signature}\n" 
                 "-------------------------\n"
             )
         text = tk.Text(scrollable_frame.scrollable_frame, wrap=tk.WORD, padx=10, pady=10, borderwidth=2, relief="groove")
